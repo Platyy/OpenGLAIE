@@ -91,10 +91,6 @@ bool MyApplication::Update()
 	m_Update = true;
 	camera->UpdatePos(window);
 
-//	sun = rotate(sun, 1.0f, vec3(1, 0, 0));
-//	merc_pos = vec3(-10, 0, 0) + vec3(10, 0, 10) * vec3(sinf(glfwGetTime()), 0, cosf(glfwGetTime()));
-//	venus_pos = vec3(0, 0, 0) + vec3(0, 10, 10) * vec3(sinf(glfwGetTime()), 0, cosf(glfwGetTime()));
-	
 	sphere.center = vec3(10, 0, 0);
 	sphere.radius = 0.5f;
 
@@ -110,42 +106,19 @@ bool MyApplication::Update()
 
 void MyApplication::Draw()
 {
-
-//	Gizmos::clear();
-//	Gizmos::addTransform(glm::mat4(1));
-
-/*	vec4 white(1);
-	vec4 black(0, 0, 0, 1);
-	for (int i = 0; i < 21; ++i) {
-		Gizmos::addLine(vec3(-10 + i, 0, 10),
-			vec3(-10 + i, 0, -10),
-			i == 10 ? white : black);
-		Gizmos::addLine(vec3(10, 0, -10 + i),
-			vec3(-10, 0, -10 + i),
-			i == 10 ? white : black);
-	}*/
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	quat->Update();
 
-	// Sun
-//	Gizmos::addSphere(vec3(-10, 0, 0), 4.5f, 30, 30, vec4(1, 1, 0, 1), &sun);
-	// Mercury
-//	Gizmos::addSphere(merc_pos, 1.2f, 15, 15, vec4(0.2f, 0.2f, 0.2f, 1), &merc);
-	// Venus
-//	Gizmos::addSphere(venus_pos, 3.0f, 30, 30, vec4(1.0f, 0.0f, 0.0f, 1), &venus);
-
-	Gizmos::draw(camera->GetProjectionView() * projection);
+	Gizmos::draw(camera->GetProjectionView());
 	Gizmos::addSphere(sphere.center, sphere.radius, 8, 8, vec4(1, 0, 1, 1));
 	vec4 plane(0, 1, 0, -1);
+
 	float d = glm::dot(vec3(plane), sphere.center) + plane.w;
 	vec4 planeColour(1, 1, 0, 1);
 	if (d > sphere.radius)
 		planeColour = vec4(0, 1, 0, 1);
 	else if (d < -sphere.radius)
 		planeColour = vec4(1, 0, 0, 1);
-	Gizmos::addTri(vec3(4, 1, 4), vec3(-4, 1, -4), vec3(-4, 1, 4),
-		planeColour);
+	Gizmos::addTri(vec3(4, 1, 4), vec3(-4, 1, -4), vec3(-4, 1, 4), planeColour);
 	Gizmos::addTri(vec3(4, 1, 4), vec3(4, 1, -4), vec3(-4, 1, -4), planeColour);
 
 	vec4 planes[6];

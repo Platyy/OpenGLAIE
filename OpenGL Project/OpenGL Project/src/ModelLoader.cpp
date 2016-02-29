@@ -1,5 +1,4 @@
 #include "ModelLoader.h"
-
 #include <glm\gtc\type_ptr.hpp>
 
 ModelLoader::ModelLoader() : m_WorldMatrix(glm::mat4(1))
@@ -92,10 +91,6 @@ void ModelLoader::Render(glm::mat4 projectionViewMatrix, glm::mat4 world, glm::v
 	glUniformMatrix4fv(projViewUniform, 1, GL_FALSE, glm::value_ptr(projectionViewMatrix));
 	glUniformMatrix4fv(worldUniform, 1, false, glm::value_ptr(world));
 
-	//GLint sPow = glGetUniformLocation(m_ProgramID, "SpecPow");
-	//GLint camPos = glGetUniformLocation(m_ProgramID, "CameraPos");
-	//glUniform1f(sPow, 64);
-	//glUniform3f(camPos, cameraPos.x, cameraPos.y, cameraPos.z);
 	//Default light
 	unsigned int loc = glGetUniformLocation(m_ProgramID, "diffuse");
 	glUniform1i(loc, 0);

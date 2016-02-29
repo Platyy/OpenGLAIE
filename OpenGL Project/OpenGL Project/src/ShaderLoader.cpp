@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "gl_core_4_4.h"
-
+// Ashley Ennerst's loader
 
 using namespace std;
 

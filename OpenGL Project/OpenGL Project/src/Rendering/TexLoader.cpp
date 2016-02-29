@@ -1,11 +1,8 @@
 #include "TexLoader.h"
 
-
-
 TexLoader::TexLoader()
 {
 }
-
 
 TexLoader::~TexLoader()
 {
@@ -47,60 +44,18 @@ void TexLoader::Init(const char* vsSource, const char* fsSource)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	stbi_image_free(data);
 
-	//float vertexData[] = {
-	//	-5, 0, 5, 1, 0, 1,
-	//	5, 0, 5, 1, 1, 1,
-	//	5, 0, -5, 1, 1, 0,
-	//	-5, 0, -5, 1, 0, 0,
-	//};	//Vertex vertexData[] =
-	//{
-	//	{ -5, 0,  5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1 },
-	//	{  5, 0,  5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1 },
-	//	{  5, 0, -5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0 },
-	//	{ -5, 0, -5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
-	//};	//
-	//unsigned int indexData[] = {
-	//	0, 1, 2,
-	//	0, 2, 3,
-	//};
-	//
-	//glGenVertexArrays(1, &m_VAO);
-	//glBindVertexArray(m_VAO);
-	//
-	//glGenBuffers(1, &m_VBO);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, vertexData, GL_STATIC_DRAW);
-	//
-	//glGenBuffers(1, &m_IBO);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * 6, indexData, GL_STATIC_DRAW);
-	//
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	//
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), ((char*)0) + 48);
-	//
-	//glEnableVertexAttribArray(2);
-	//glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), ((char*)0) + 16);
-	//
-	//glEnableVertexAttribArray(3);
-	//glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), ((char*)0) + 32);
-	//
-	//glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 	Vertex vertexData[] = {
 		{ -5, 0, 5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1 },
 		{ 5, 0, 5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1 },
 		{ 5, 0, -5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0 },
 		{ -5, 0, -5, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0 },
 	};
+
 	unsigned int indexData[] = {
 		0, 1, 2,
 		0, 2, 3,
 	};
+
 	glGenVertexArrays(1, &m_VAO);
 	glBindVertexArray(m_VAO);
 	glGenBuffers(1, &m_VBO);

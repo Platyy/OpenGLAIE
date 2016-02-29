@@ -1,10 +1,5 @@
 #include "Camera.h"
 
-void Camera::Update()
-{
-
-}
-
 void Camera::SetPerspective(float FOV, float aspectRatio, float nearField, float farField) 
 {
 	m_ProjectionTransform = glm::perspective(glm::pi<float>() * FOV,

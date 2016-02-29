@@ -4,17 +4,13 @@ RenderEngine::RenderEngine() : projViewUniform(0), worldUniform(0)
 {
 }
 
-
 RenderEngine::~RenderEngine()
 {
 }
 
-
 void RenderEngine::Init(const GLchar* vsSource, const GLchar* fsSource)
 {
 	// Vertex Shader
-	glfwInit();
-
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vsSource, NULL);
 	glCompileShader(vertexShader);
@@ -71,7 +67,6 @@ void RenderEngine::Init(const GLchar* vsSource, const GLchar* fsSource)
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
 
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
@@ -87,20 +82,10 @@ void RenderEngine::Init(const GLchar* vsSource, const GLchar* fsSource)
 
 void RenderEngine::Render(glm::mat4 projectionViewMatrix, glm::mat4 world)
 {
-	
-
-	// Get program from init
 	glUseProgram(m_ProgramID);
-	
 	glUniformMatrix4fv(projViewUniform, 1, false, glm::value_ptr(projectionViewMatrix));
 	glUniformMatrix4fv(worldUniform, 1, false, glm::value_ptr(world));
-	//glBindVertexArray(m_VAO);
-
-//	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
-
-//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0); 
-
 }
 
 void RenderEngine::Close()

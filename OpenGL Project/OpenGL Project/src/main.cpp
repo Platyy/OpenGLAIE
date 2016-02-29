@@ -1,7 +1,5 @@
 #include "MyApplication.h"
 
-
-
 int main() 
 {
 	MyApplication* myApp = new MyApplication();

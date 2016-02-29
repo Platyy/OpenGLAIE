@@ -51,11 +51,6 @@ void CharacterLoader::Render(glm::mat4 projectionViewMatrix, glm::vec3 cameraPos
 	glUniformMatrix4fv(projViewUniform, 1, GL_FALSE, glm::value_ptr(projectionViewMatrix * m_WorldMatrix));
 	glUniformMatrix4fv(worldUniform, 1, GL_FALSE, glm::value_ptr(m_WorldMatrix));
 
-	//GLint sPow = glGetUniformLocation(m_ProgramID, "SpecPow");
-	//GLint camPos = glGetUniformLocation(m_ProgramID, "CameraPos");
-	//glUniform1f(sPow, 128);
-	//glUniform3f(camPos, cameraPos.x, cameraPos.y, cameraPos.z);
-
 	//Default light
 	glm::vec3 light(sin(glfwGetTime()), 1, cos(glfwGetTime()));
 	GLint lightColor = glGetUniformLocation(m_ProgramID, "LightColor");
@@ -72,9 +67,7 @@ void CharacterLoader::Render(glm::mat4 projectionViewMatrix, glm::vec3 cameraPos
 	skeleton->updateBones();
 
 	for (unsigned int bone_index = 0; bone_index < skeleton->m_boneCount; ++bone_index)
-	{
 		skeleton->m_nodes[bone_index]->updateGlobalTransform();
-	}
 
 	for (unsigned int i = 0; i < m_FBX->getMeshCount(); ++i)
 	{
@@ -88,14 +81,12 @@ void CharacterLoader::Render(glm::mat4 projectionViewMatrix, glm::vec3 cameraPos
 			int tex = glGetUniformLocation(m_ProgramID, "diffuse");
 			glUniform1i(tex, 0);
 		}
-		
 		if (pNormTex) {
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, pNormTex->handle);
 			int tex = glGetUniformLocation(m_ProgramID, "normalMap");
 			glUniform1i(tex, 1);
 		}
-
 		unsigned int* glData = (unsigned int*)mesh->m_userData;
 		glBindVertexArray(glData[0]);
 		glDrawElements(GL_TRIANGLES, (unsigned int)mesh->m_indices.size(), GL_UNSIGNED_INT, 0);

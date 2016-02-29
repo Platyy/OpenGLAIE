@@ -88,7 +88,6 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	stbi_image_free(data);
 
-
 	Verts* aoVertices = new Verts[_rows * _cols];
 	for (unsigned int r = 0; r < _rows; ++r)
 	{
@@ -100,6 +99,7 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 			aoVertices[r * _cols + c].texCoord = glm::vec2((float)r / _rows, (float)c / _cols);
 		}
 	}
+
 	// Index array
 	unsigned int* auiIndices = new unsigned int[(_rows - 1) * (_cols - 1) * 6];
 	unsigned int index = 0;
@@ -119,7 +119,6 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 
 	indexCount = (_rows - 1) * (_cols - 1) * 6;
 
-
 	glGenVertexArrays(1, &m_VAO);
 	
 	glGenBuffers(1, &m_VBO);
@@ -132,7 +131,6 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (_rows - 1) * (_cols - 1) * 6 * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
 	
-
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Verts), (void*)offsetof(Verts, position));
@@ -145,7 +143,6 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 
 void Terrain::RenderGrid(glm::mat4 projView, float grass, float rock)
 {
-
 	glUseProgram(m_ProgramID);
 	unsigned int loc = glGetUniformLocation(m_ProgramID, "ProjectionView");
 	glUniformMatrix4fv(loc, 1, false, glm::value_ptr(projView));
