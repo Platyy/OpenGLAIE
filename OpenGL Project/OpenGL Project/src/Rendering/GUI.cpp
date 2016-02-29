@@ -46,7 +46,7 @@ void GUI::Init(GLFWwindow* _window)
 
 void GUI::Draw()
 {
-	TwDraw();
+	//TwDraw();
 	glClearColor(m_ClearColour.r, m_ClearColour.g, m_ClearColour.b, m_ClearColour.a);
 }
 
