@@ -8,6 +8,40 @@ Terrain::~Terrain()
 {
 }
 
+KeyState::State Terrain::HandleInput(GLFWwindow* window, int key)
+{
+	static KeyState::State m_States[1024];
+
+	if (m_States[key] == KeyState::PRESSED)
+		m_States[key] = KeyState::DOWN;
+
+	if (m_States[key] == KeyState::RELEASED)
+		m_States[key] = KeyState::UP;
+
+	if (m_States[key] == KeyState::UP)
+	{
+		if (glfwGetKey(window, key) == GLFW_PRESS  && m_States[key] != KeyState::DOWN)
+			m_States[key] = KeyState::PRESSED;
+	}
+
+	if (m_States[key] == KeyState::DOWN)
+	{
+		if (glfwGetKey(window, key) == GLFW_RELEASE && m_States[key] != KeyState::UP)
+			m_States[key] = KeyState::RELEASED;
+	}
+
+	return m_States[key];
+}
+
+void Terrain::UpdateGrid(GLFWwindow* window)
+{
+	if (HandleInput(window, GLFW_KEY_G) == KeyState::PRESSED)
+	{
+		printf("test");
+		ReGenGrid(64, 64);
+	}
+}
+
 void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrainVS, const char* terrainFS)
 {
 	int success = GL_FALSE;
@@ -131,6 +165,104 @@ void Terrain::GenGrid(unsigned int _rows, unsigned int _cols, const char* terrai
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (_rows - 1) * (_cols - 1) * 6 * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
 	
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Verts), (void*)offsetof(Verts, position));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Verts), (void*)offsetof(Verts, texCoord));
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	delete[] aoVertices;
+}
+
+void Terrain::ReGenGrid(unsigned int _rows, unsigned int _cols)
+{
+	glDeleteBuffers(1, &m_VAO);
+	glDeleteTextures(1, &m_PerlinTexture);
+
+	m_VAO = 0;
+	m_PerlinTexture = 0;
+	indexCount = 0;
+
+	static float seed = 0;
+
+	int dims = 64;
+	int octaves = 3;
+	float* perlinData = new float[dims * dims];
+	float scale = (2.0f / dims) * 3;
+	for (int x = 0; x < 64; ++x)
+	{
+		for (int y = 0; y < 64; ++y)
+		{
+			float amplitude = 1.f;
+			float persistence = 0.1f;
+
+			perlinData[y * dims + x] = 0;
+			for (int o = 0; o < octaves; ++o)
+			{
+				float freq = powf(2, (float)o);
+				float perlinSample = glm::perlin((glm::vec2((float)x, (float)y) + (seed * seed)) * scale * freq) * 0.5f + 0.5f;
+				perlinData[y * dims + x] += perlinSample * amplitude;
+				amplitude *= persistence;
+			}
+		}
+	}
+	seed++;
+
+	glGenTextures(1, &m_PerlinTexture);
+	glBindTexture(GL_TEXTURE_2D, m_PerlinTexture);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 64, 64, 0, GL_RED, GL_FLOAT, perlinData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	Verts* aoVertices = new Verts[_rows * _cols];
+	for (unsigned int r = 0; r < _rows; ++r)
+	{
+		for (unsigned int c = 0; c < _cols; ++c)
+		{
+			aoVertices[r * _cols + c].position = glm::vec4((float)c, 0, (float)r, 1);
+
+			// calc tex coords 0-1
+			aoVertices[r * _cols + c].texCoord = glm::vec2((float)r / _rows, (float)c / _cols);
+		}
+	}
+
+	// Index array
+	unsigned int* auiIndices = new unsigned int[(_rows - 1) * (_cols - 1) * 6];
+	unsigned int index = 0;
+	for (unsigned int r = 0; r < (_rows - 1); ++r)
+	{
+		for (unsigned int c = 0; c < (_cols - 1); ++c)
+		{
+			auiIndices[index++] = r * _cols + c;
+			auiIndices[index++] = (r + 1) * _cols + c;
+			auiIndices[index++] = (r + 1) * _cols + (c + 1);
+
+			auiIndices[index++] = r * _cols + c;
+			auiIndices[index++] = (r + 1) * _cols + (c + 1);
+			auiIndices[index++] = r * _cols + (c + 1);
+		}
+	}
+
+	indexCount = (_rows - 1) * (_cols - 1) * 6;
+
+	glGenVertexArrays(1, &m_VAO);
+
+	glGenBuffers(1, &m_VBO);
+	glGenBuffers(1, &m_IBO);
+
+	glBindVertexArray(m_VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	glBufferData(GL_ARRAY_BUFFER, (_rows * _cols) * sizeof(Verts), aoVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, (_rows - 1) * (_cols - 1) * 6 * sizeof(unsigned int), auiIndices, GL_STATIC_DRAW);
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Verts), (void*)offsetof(Verts, position));

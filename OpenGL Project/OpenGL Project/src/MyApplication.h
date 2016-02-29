@@ -43,6 +43,9 @@ public:
 	bool m_Update;
 	const char* vsSource;
 	const char* fsSource;
+
+	const char* tVS;
+	const char* tFS;
 	bool needInit = true;
 
 	int Init();

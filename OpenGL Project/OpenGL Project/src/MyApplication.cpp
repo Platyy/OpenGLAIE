@@ -60,15 +60,15 @@ int MyApplication::Init()
 
 	std::string tV = Resource::ImportShader("terrainVS");
 	std::string tF = Resource::ImportShader("terrainFS");
-	const char* tVS = tV.c_str();
-	const char* tFS = tF.c_str();
+	tVS = tV.c_str();
+	tFS = tF.c_str();
 
 	render->Init(vsSource, fsSource);
 	loader->Init(vsSource, fsSource);
 //	texLoader->Init(vsSource, fsSource);
 	charLoader->Init(vsSource, fsSource);
-	gui->Init(window);
 	terrain->GenGrid(64, 64, tVS, tFS);
+	gui->Init(window);
 
 	prog = render->m_ProgramID;
 
@@ -93,6 +93,8 @@ bool MyApplication::Update()
 
 	sphere.center = vec3(10, 0, 0);
 	sphere.radius = 0.5f;
+
+	terrain->UpdateGrid(window);
 
 	int state = glfwGetKey(window, GLFW_KEY_ESCAPE);
 
@@ -128,14 +130,14 @@ void MyApplication::Draw()
 		float d = glm::dot(vec3(planes[i]), sphere.center) +
 			planes[i].w;
 		if (d < -sphere.radius) {
-			printf("Behind, don't render it!\n");
+			//printf("Behind, don't render it!\n");
 			break;
 		}
 		else if (d < sphere.radius) {
-			printf("Touching, we still need to render it!\n");
+			//printf("Touching, we still need to render it!\n");
 		}
 		else {
-			printf("Front, fully visible so render it!\n");
+			//printf("Front, fully visible so render it!\n");
 			charLoader->Render(camera->GetProjectionView(), m_pos);
 			charLoader->UpdateCharPos(glm::vec3(gui->pos.x, gui->pos.y, gui->pos.z), 
 				glm::vec3(gui->rot.x, gui->rot.y, gui->rot.z));
